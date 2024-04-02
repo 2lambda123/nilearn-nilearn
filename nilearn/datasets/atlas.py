@@ -5,7 +5,6 @@ import os
 import re
 import shutil
 import warnings
-import xml.etree.ElementTree
 from pathlib import Path
 from tempfile import mkdtemp
 
@@ -17,6 +16,7 @@ from sklearn.utils import Bunch
 from .._utils import check_niimg, fill_doc
 from ..image import get_data, new_img_like, reorder_img
 from ._utils import fetch_files, get_dataset_descr, get_dataset_dir
+import defusedxml.ElementTree
 
 _TALAIRACH_LEVELS = ["hemisphere", "lobe", "gyrus", "tissue", "ba"]
 
@@ -726,11 +726,10 @@ def _get_atlas_data_and_labels(
     # Reorder image to have positive affine diagonal
     atlas_img = reorder_img(atlas_file)
     names = {}
-    from xml.etree import ElementTree
 
     names[0] = "Background"
     for n, label in enumerate(
-        ElementTree.parse(label_file).findall(".//label")
+        defusedxml.ElementTree.parse(label_file).findall(".//label")
     ):
         new_idx = int(label.get("index")) + 1
         if new_idx in names:
@@ -1323,7 +1322,7 @@ def fetch_atlas_aal(
     labels = []
     indices = []
     if version == "SPM12":
-        xml_tree = xml.etree.ElementTree.parse(labels_file)
+        xml_tree = defusedxml.ElementTree.parse(labels_file)
         root = xml_tree.getroot()
         for label in root.iter("label"):
             indices.append(label.find("index").text)
