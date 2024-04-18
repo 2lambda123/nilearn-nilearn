@@ -20,8 +20,8 @@ class Get:
     def __call__(self, url):
         time.sleep(self.delay)
         self.url = url
-        requests.get(url.replace("index.html", "favicon.ico"))
-        self.content = requests.get(url).content
+        requests.get(url.replace("index.html", "favicon.ico"), timeout=60)
+        self.content = requests.get(url, timeout=60).content
 
 
 # disable request mocking for this test -- note we are accessing localhost only

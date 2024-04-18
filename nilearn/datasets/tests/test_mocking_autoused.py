@@ -9,11 +9,11 @@ def test_request_mocking_autoused_requests():
     assert requests.sessions.Session.send.__class__.__name__ == "Sender"
     assert requests.sessions.Session.send.is_mock
 
-    resp = requests.get("https://example.com")
+    resp = requests.get("https://example.com", timeout=60)
 
     assert resp.is_mock
 
-    resp = requests.post("https://example.com", data={"key": "value"})
+    resp = requests.post("https://example.com", data={"key": "value"}, timeout=60)
 
     assert resp.is_mock
 

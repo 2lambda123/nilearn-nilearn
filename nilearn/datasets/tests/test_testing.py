@@ -13,18 +13,18 @@ from nilearn.datasets.tests import _testing
 
 def test_sender_key_order(request_mocker):
     request_mocker.url_mapping["*message.txt"] = "message"
-    resp = requests.get("https://example.org/message.txt")
+    resp = requests.get("https://example.org/message.txt", timeout=60)
 
     assert resp.text == "message"
 
     request_mocker.url_mapping["*.txt"] = "new message"
-    resp = requests.get("https://example.org/message.txt")
+    resp = requests.get("https://example.org/message.txt", timeout=60)
 
     assert resp.text == "new message"
 
     request_mocker.url_mapping["*.csv"] = "other message"
 
-    resp = requests.get("https://example.org/message.txt")
+    resp = requests.get("https://example.org/message.txt", timeout=60)
 
     assert resp.text == "new message"
 
@@ -38,7 +38,7 @@ def test_loading_from_archive_contents(tmp_path):
             Path("data", "labels.csv"),
         ]
     )
-    resp = requests.get("https://example.org/example_zip")
+    resp = requests.get("https://example.org/example_zip", timeout=60)
     file_path = tmp_path / "archive.zip"
     file_path.write_bytes(resp.content)
     zip_extract_dir = tmp_path / "extract_zip"
@@ -53,7 +53,7 @@ def test_loading_from_archive_contents(tmp_path):
     assert labels_file.read_bytes() == b""
 
     for url_end in ["_default_format", "_tar_gz"]:
-        resp = requests.get(f"https://example.org/example{url_end}")
+        resp = requests.get(f"https://example.org/example{url_end}", timeout=60)
         file_path = tmp_path / "archive.tar.gz"
         file_path.write_bytes(resp.content)
         tar_extract_dir = tmp_path / f"extract_tar{url_end}"
@@ -77,7 +77,7 @@ def test_sender_regex(request_mocker):
         r".*example.org/(?P<section>.*)\?.*name=(?P<name>[^&]+)"
     )
     request_mocker.url_mapping[pattern] = r"in \g<section>: hello \2"
-    resp = requests.get(url)
+    resp = requests.get(url, timeout=60)
 
     assert resp.text == "in info: hello nilearn"
 
@@ -85,7 +85,7 @@ def test_sender_regex(request_mocker):
         return f"name: {match.group('name')}, url: {request.url}"
 
     request_mocker.url_mapping[pattern] = f
-    resp = requests.get(url)
+    resp = requests.get(url, timeout=60)
 
     assert resp.text == f"name: nilearn, url: {url}"
 
@@ -93,7 +93,7 @@ def test_sender_regex(request_mocker):
         return 403
 
     request_mocker.url_mapping[pattern] = g
-    resp = requests.get(url)
+    resp = requests.get(url, timeout=60)
     with pytest.raises(requests.HTTPError, match="Error"):
         resp.raise_for_status()
 
@@ -101,13 +101,13 @@ def test_sender_regex(request_mocker):
 def test_sender_status(request_mocker):
     request_mocker.url_mapping["*good"] = 200
     request_mocker.url_mapping["*forbidden"] = 403
-    resp = requests.get("https://example.org/good")
+    resp = requests.get("https://example.org/good", timeout=60)
 
     assert resp.status_code == 200
     assert resp.text == "OK"
 
     resp.raise_for_status()
-    resp = requests.get("https://example.org/forbidden")
+    resp = requests.get("https://example.org/forbidden", timeout=60)
 
     assert resp.status_code == 403
     assert resp.text == "ERROR"
@@ -122,12 +122,12 @@ class _MyError(Exception):
 def test_sender_exception(request_mocker):
     request_mocker.url_mapping["*bad"] = _MyError("abc")
     with pytest.raises(_MyError, match="abc"):
-        requests.get("ftp:example.org/bad")
+        requests.get("ftp:example.org/bad", timeout=60)
 
 
 def test_sender_img(request_mocker, tmp_path):
     request_mocker.url_mapping["*"] = generate_fake_fmri()[0]
-    resp = requests.get("ftp:example.org/download")
+    resp = requests.get("ftp:example.org/download", timeout=60)
     file_path = tmp_path / "img.nii.gz"
     file_path.write_bytes(resp.content)
     img = image.load_img(str(file_path))
@@ -149,11 +149,11 @@ def test_sender_response(request_mocker):
         return resp
 
     request_mocker.url_mapping["*example.org/b"] = f
-    resp = requests.get("https://example.org/a")
+    resp = requests.get("https://example.org/a", timeout=60)
 
     assert resp.json() == '{"count": 1}'
 
-    resp = requests.get("https://example.org/b")
+    resp = requests.get("https://example.org/b", timeout=60)
 
     assert resp.headers["cookie"] == "abc"
 
@@ -165,11 +165,11 @@ def test_sender_path(request_mocker, tmp_path):
     request_mocker.url_mapping["*path"] = str(file_path)
     request_mocker.url_mapping["*content"] = file_path
 
-    resp = requests.get("https://example.org/path")
+    resp = requests.get("https://example.org/path", timeout=60)
 
     assert resp.text == str(file_path)
 
-    resp = requests.get("https://example.org/content")
+    resp = requests.get("https://example.org/content", timeout=60)
 
     assert resp.text == "hello"
 
@@ -177,7 +177,7 @@ def test_sender_path(request_mocker, tmp_path):
 def test_sender_bad_input(request_mocker):
     request_mocker.url_mapping["*"] = 2.5
     with pytest.raises(TypeError):
-        requests.get("https://example.org")
+        requests.get("https://example.org", timeout=60)
 
 
 def test_dict_to_archive(tmp_path):
