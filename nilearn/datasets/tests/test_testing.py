@@ -53,7 +53,9 @@ def test_loading_from_archive_contents(tmp_path):
     assert labels_file.read_bytes() == b""
 
     for url_end in ["_default_format", "_tar_gz"]:
-        resp = requests.get(f"https://example.org/example{url_end}", timeout=60)
+        resp = requests.get(
+            f"https://example.org/example{url_end}", timeout=60
+        )
         file_path = tmp_path / "archive.tar.gz"
         file_path.write_bytes(resp.content)
         tar_extract_dir = tmp_path / f"extract_tar{url_end}"

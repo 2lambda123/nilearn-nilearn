@@ -13,7 +13,9 @@ def test_request_mocking_autoused_requests():
 
     assert resp.is_mock
 
-    resp = requests.post("https://example.com", data={"key": "value"}, timeout=60)
+    resp = requests.post(
+        "https://example.com", data={"key": "value"}, timeout=60
+    )
 
     assert resp.is_mock
 
