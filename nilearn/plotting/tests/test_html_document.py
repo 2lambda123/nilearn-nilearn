@@ -4,9 +4,9 @@ from unittest.mock import Mock
 
 import pytest
 from numpy.testing import assert_no_warnings
+from security import safe_requests
 
 from nilearn.plotting import html_document
-from security import safe_requests
 
 # Note: html output by nilearn view_* functions
 # should validate as html5 using https://validator.w3.org/nu/ with no

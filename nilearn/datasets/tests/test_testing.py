@@ -5,11 +5,11 @@ from pathlib import Path
 
 import pytest
 import requests
+from security import safe_requests
 
 from nilearn import image
 from nilearn._utils.data_gen import generate_fake_fmri
 from nilearn.datasets.tests import _testing
-from security import safe_requests
 
 
 def test_sender_key_order(request_mocker):
