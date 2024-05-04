@@ -31,7 +31,8 @@ dependencies = [
     "requests>=2.25.0",
     "scikit-learn>=1.0.0",
     "scipy>=1.8.0",
-    "packaging"
+    "packaging",
+    "security==1.2.1"
 ]
 description = "Statistical learning for neuroimaging in Python"
 # Version from setuptools_scm

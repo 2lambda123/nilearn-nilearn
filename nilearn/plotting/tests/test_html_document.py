@@ -3,10 +3,10 @@ import webbrowser
 from unittest.mock import Mock
 
 import pytest
-import requests
 from numpy.testing import assert_no_warnings
 
 from nilearn.plotting import html_document
+from security import safe_requests
 
 # Note: html output by nilearn view_* functions
 # should validate as html5 using https://validator.w3.org/nu/ with no
@@ -20,8 +20,8 @@ class Get:
     def __call__(self, url):
         time.sleep(self.delay)
         self.url = url
-        requests.get(url.replace("index.html", "favicon.ico"))
-        self.content = requests.get(url).content
+        safe_requests.get(url.replace("index.html", "favicon.ico"))
+        self.content = safe_requests.get(url).content
 
 
 # disable request mocking for this test -- note we are accessing localhost only

@@ -9,6 +9,7 @@ import requests
 from nilearn import image
 from nilearn._utils.data_gen import generate_fake_fmri
 from nilearn.datasets.tests import _testing
+from security import safe_requests
 
 
 def test_sender_key_order(request_mocker):
@@ -53,7 +54,7 @@ def test_loading_from_archive_contents(tmp_path):
     assert labels_file.read_bytes() == b""
 
     for url_end in ["_default_format", "_tar_gz"]:
-        resp = requests.get(f"https://example.org/example{url_end}")
+        resp = safe_requests.get(f"https://example.org/example{url_end}")
         file_path = tmp_path / "archive.tar.gz"
         file_path.write_bytes(resp.content)
         tar_extract_dir = tmp_path / f"extract_tar{url_end}"
