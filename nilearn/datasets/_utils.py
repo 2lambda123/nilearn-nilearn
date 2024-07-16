@@ -53,7 +53,7 @@ def read_md5_sum_file(path):
     with open(path) as f:
         hashes = {}
         while True:
-            line = f.readline()
+            line = f.readline(5_000_000)
             if not line:
                 break
             h, name = line.rstrip().split("  ", 1)
