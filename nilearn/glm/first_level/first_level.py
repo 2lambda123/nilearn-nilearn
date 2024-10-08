@@ -950,7 +950,7 @@ def _check_events_file_uses_tab_separators(events_files):
             continue
         try:
             with open(events_file_) as events_file_obj:
-                events_file_sample = events_file_obj.readline()
+                events_file_sample = events_file_obj.readline(5_000_000)
             """
             The following errors are not being handled here,
             as they are handled elsewhere in the calling code.

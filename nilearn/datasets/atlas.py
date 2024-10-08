@@ -1624,7 +1624,7 @@ def fetch_coords_seitzman_2018(ordered_regions=True, legacy_format=True):
     # get integer regional labels and convert to text labels with mapping
     # from header line
     with open(anatomical_file) as fi:
-        header = fi.readline()
+        header = fi.readline(5_000_000)
     region_mapping = {}
     for r in header.strip().split(","):
         i, region = r.split("=")
