@@ -1241,7 +1241,7 @@ def fetch_abide_pcp(
     # done simply with pandas but we don't want such dependency ATM
     # pheno = pandas.read_csv(path_csv).to_records()
     with open(path_csv) as pheno_f:
-        pheno = [f"i{pheno_f.readline()}"]
+        pheno = [f"i{pheno_f.readline(5_000_000)}"]
 
         # This regexp replaces commas between double quotes
         pheno.extend(
