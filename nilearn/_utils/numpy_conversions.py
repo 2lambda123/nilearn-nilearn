@@ -178,7 +178,9 @@ def csv_to_array(csv_path, delimiters=" \t,;", **kwargs):
         # In that case, we try to guess the delimiter.
         try:
             with open(csv_path) as csv_file:
-                dialect = csv.Sniffer().sniff(csv_file.readline(), delimiters)
+                dialect = csv.Sniffer().sniff(
+                    csv_file.readline(5_000_000), delimiters
+                )
         except csv.Error as e:
             raise TypeError(
                 f"Could not read CSV file [{csv_path}]: {e.args[0]}"
