@@ -75,7 +75,7 @@ repos:
         -   black==23.9.1
 
 -   repo: https://github.com/codespell-project/codespell
-    rev: v2.3.0
+    rev: v2.4.0
     hooks:
     -   id: codespell
         args: [--toml, pyproject.toml]
